@@ -1,0 +1,134 @@
+#!/bin/bash
+
+# Variable Declaration
+URL='https://www.tooplate.com/zip-templates/2098_health.zip'
+ART_NAME=2098_health
+TEMPDIR="/tmp/webfile"
+
+# Check if sudo is available
+yum --help &> /dev/null
+if [ $? -eq 0 ]; then
+# CentOS package installation
+echo "Centos Runing!!!"
+PACKAGE="httpd wget vim unzip"
+SRV="httpd"
+echo "####################################################"
+echo "Installing packages...."
+sudo yum install $PACKAGE -y >/dev/null
+echo "####################################################"
+echo
+
+# Start and Enable the service
+echo "####################################################"
+echo "Start The Service...."
+sudo systemctl start $SRV
+sleep 1
+echo "####################################################"
+echo
+
+echo "####################################################"
+echo "Enable The Service...."
+sudo systemctl enable $SRV
+sleep 1
+echo "####################################################"
+echo
+
+# Creating Temp Directory
+echo "####################################################"
+echo "Starting Artifact Deployment...."
+sleep 1
+mkdir $TEMPDIR
+cd $TEMPDIR
+echo "####################################################"
+echo
+
+echo "####################################################"
+echo "Install the website and unzip the file, then copy the file and move into /var/www/html/...."
+wget $URL > /dev/null
+unzip $ART_NAME.zip > /dev/null
+sudo cp -r $ART_NAME/* /var/www/html
+sleep 1
+echo "####################################################"
+echo
+
+# Bounce Service
+echo "####################################################"
+echo "Restarting $SRV service"
+sudo systemctl restart $SRV
+sleep 1
+echo "#####################################################"
+echo
+
+# Clean Up
+echo "####################################################"
+echo "Removing Temporary Files"
+rm -rf $TEMPDIR
+sleep 1
+echo "####################################################"
+echo
+sudo systemctl status $SRV
+
+else
+    # Ubuntu package installation
+    PACKAGE="apache2 wget vim unzip"
+    SRV="apache2"
+echo "####################################################"
+echo "Installing packages...."
+sudo apt update
+sudo apt install $PACKAGE -y >/dev/null
+echo "####################################################"
+echo
+
+# Start and Enable the service
+echo "####################################################"
+echo "Start The Service...."
+sudo systemctl start $SRV
+sleep 1
+echo "####################################################"
+echo
+
+echo "####################################################"
+echo "Enable The Service...."
+sudo systemctl enable $SRV
+sleep 1
+echo "####################################################"
+echo
+
+# Creating Temp Directory
+echo "####################################################"
+echo "Starting Artifact Deployment...."
+sleep 1
+mkdir $TEMPDIR
+cd $TEMPDIR
+echo "####################################################"
+echo
+
+echo "####################################################"
+echo "Install the website and unzip the file, then copy the file and move into /var/www/html/...."
+wget $URL > /dev/null
+unzip $ART_NAME.zip > /dev/null
+sudo cp -r $ART_NAME/* /var/www/html
+sleep 1
+echo "####################################################"
+echo
+
+# Bounce Service
+echo "####################################################"
+echo "Restarting $SRV service"
+sudo systemctl restart $SRV
+sleep 1
+echo "#####################################################"
+echo
+
+# Clean Up
+echo "####################################################"
+echo "Removing Temporary Files"
+rm -rf $TEMPDIR
+sleep 1
+echo "####################################################"
+echo
+sudo systemctl status $SRV
+fi
+
+
+
